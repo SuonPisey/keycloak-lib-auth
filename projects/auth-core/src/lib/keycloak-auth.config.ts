@@ -1,9 +1,4 @@
  import type { KeycloakConfig } from 'keycloak-js';
-
-/**
- * Parses a Keycloak "authority" URL (e.g. https://sso.example.com/auth/realms/myrealm)
- * into the { url, realm, clientId } shape keycloak-js expects.
- */
 export function parseKeycloakAuthority(
   authority: string,
   clientId: string,

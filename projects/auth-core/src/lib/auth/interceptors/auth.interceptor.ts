@@ -1,7 +1,7 @@
 import { HttpInterceptorFn } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { from, switchMap } from 'rxjs';
-import { KeycloakAuthService } from './keycloak-auth.service';
+import { KeycloakAuthService } from '../services/keycloak-auth.service';
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const auth = inject(KeycloakAuthService);

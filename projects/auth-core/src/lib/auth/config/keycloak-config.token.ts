@@ -1,4 +1,4 @@
- import { InjectionToken } from '@angular/core';
+import { InjectionToken } from '@angular/core';
 
 export interface KeycloakAuthConfig {
   authority: string;
@@ -11,6 +11,4 @@ export interface KeycloakAuthConfig {
   production?: boolean;
 }
 
-export const KEYCLOAK_AUTH_CONFIG = new InjectionToken<KeycloakAuthConfig>(
-  'KEYCLOAK_AUTH_CONFIG',
-);
+export const KEYCLOAK_AUTH_CONFIG = new InjectionToken<KeycloakAuthConfig>('KEYCLOAK_AUTH_CONFIG');

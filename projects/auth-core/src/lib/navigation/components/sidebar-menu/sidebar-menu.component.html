@@ -1,0 +1,66 @@
+<nav class="auth-sidebar" [class.auth-sidebar--collapsed]="collapsed" [attr.aria-label]="ariaLabel">
+  <div class="auth-sidebar__title" *ngIf="title && !collapsed">{{ title }}</div>
+
+  <ng-container
+    *ngTemplateOutlet="menuList; context: { $implicit: displayedItems, level: 1 }"
+  ></ng-container>
+</nav>
+
+<ng-template #menuList let-menuItems let-level="level">
+  <ul class="auth-sidebar__list" [class.auth-sidebar__submenu]="level > 1">
+    <li
+      *ngFor="let item of menuItems; trackBy: trackByMenuItem"
+      class="auth-sidebar__item"
+      routerLinkActive="auth-sidebar__item--active"
+      (isActiveChange)="expandActiveGroup(item, $event)"
+    >
+      <div *ngIf="item.type === 'separator'" class="auth-sidebar__separator" role="separator">
+        <span *ngIf="item.name && !collapsed">{{ item.name }}</span>
+      </div>
+
+      <button
+        *ngIf="item.type === 'dropDown'"
+        class="auth-sidebar__control"
+        type="button"
+        [disabled]="item.disabled"
+        [attr.aria-expanded]="isExpanded(item)"
+        (click)="toggle(item)"
+      >
+        <span class="auth-sidebar__icon material-icons" *ngIf="item.icon" aria-hidden="true">{{
+          item.icon
+        }}</span>
+        <span class="auth-sidebar__label" *ngIf="!collapsed || level > 1">{{ item.name }}</span>
+        <span class="auth-sidebar__badge" *ngFor="let badge of item.badges">{{ badge.value }}</span>
+        <span
+          class="auth-sidebar__caret"
+          [class.auth-sidebar__caret--open]="isExpanded(item)"
+          aria-hidden="true"
+          >›</span
+        >
+      </button>
+
+      <a
+        *ngIf="item.type === 'link' || item.type === 'icon'"
+        class="auth-sidebar__control"
+        [class.auth-sidebar__control--disabled]="item.disabled"
+        [routerLink]="item.disabled ? null : ['/', item.state]"
+        routerLinkActive="auth-sidebar__control--active"
+        [routerLinkActiveOptions]="{ exact: false }"
+        [attr.aria-disabled]="item.disabled || null"
+        [attr.title]="collapsed ? item.tooltip || item.name : item.tooltip"
+      >
+        <span class="auth-sidebar__icon material-icons" *ngIf="item.icon" aria-hidden="true">{{
+          item.icon
+        }}</span>
+        <span class="auth-sidebar__label" *ngIf="!collapsed || level > 1">{{ item.name }}</span>
+        <span class="auth-sidebar__badge" *ngFor="let badge of item.badges">{{ badge.value }}</span>
+      </a>
+
+      <ng-container *ngIf="item.sub?.length && isExpanded(item)">
+        <ng-container
+          *ngTemplateOutlet="menuList; context: { $implicit: item.sub, level: level + 1 }"
+        ></ng-container>
+      </ng-container>
+    </li>
+  </ul>
+</ng-template>

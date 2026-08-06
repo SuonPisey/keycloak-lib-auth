@@ -1,8 +1,5 @@
- import type { KeycloakConfig } from 'keycloak-js';
-export function parseKeycloakAuthority(
-  authority: string,
-  clientId: string,
-): KeycloakConfig {
+import type { KeycloakConfig } from 'keycloak-js';
+export function parseKeycloakAuthority(authority: string, clientId: string): KeycloakConfig {
   const url = new URL(authority);
   const segments = url.pathname.split('/').filter(Boolean);
   const realmIndex = segments.indexOf('realms');
@@ -15,9 +12,7 @@ export function parseKeycloakAuthority(
   const basePathSegments =
     realmIndex !== -1 ? segments.slice(0, realmIndex) : segments.slice(0, -1);
 
-  const baseUrl = `${url.origin}${
-    basePathSegments.length ? '/' + basePathSegments.join('/') : ''
-  }`;
+  const baseUrl = `${url.origin}${basePathSegments.length ? '/' + basePathSegments.join('/') : ''}`;
 
   return {
     url: baseUrl,

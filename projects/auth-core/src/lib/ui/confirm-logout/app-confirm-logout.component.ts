@@ -11,7 +11,7 @@ export interface ConfirmLogoutDialogData {
 }
 
 @Component({
-  selector: 'app-confirm-logout',
+  selector: 'auth-confirm-logout, app-confirm-logout',
   standalone: true,
   imports: [CommonModule],
   template: `
@@ -19,7 +19,9 @@ export interface ConfirmLogoutDialogData {
       <h2>{{ data.title }}</h2>
       <p>{{ data.message }}</p>
       <p *ngIf="data.info">{{ data.info }}</p>
-      <p><strong>{{ remainingSeconds }}s</strong> remaining</p>
+      <p>
+        <strong>{{ remainingSeconds }}s</strong> remaining
+      </p>
       <div class="actions">
         <button type="button" (click)="logoutNow()">{{ data.logoutLabel }}</button>
         <button type="button" (click)="staySignedIn()">{{ data.continueLabel }}</button>
@@ -27,7 +29,7 @@ export interface ConfirmLogoutDialogData {
     </section>
   `,
 })
-export class AppComfirmLogoutComponent implements OnInit, OnDestroy {
+export class AppConfirmLogoutComponent implements OnInit, OnDestroy {
   @Input() data!: ConfirmLogoutDialogData;
   remainingSeconds: number;
   private intervalId: ReturnType<typeof window.setInterval> | null = null;

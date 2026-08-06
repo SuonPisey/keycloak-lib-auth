@@ -1,18 +1,14 @@
- import { isPlatformBrowser } from '@angular/common';
+import { isPlatformBrowser } from '@angular/common';
 import { Injectable, PLATFORM_ID, inject } from '@angular/core';
-import type {
-    KeycloakProfile,
-    KeycloakTokenParsed,
-    KeycloakUserInfo,
-} from 'keycloak-js';
+import type { KeycloakProfile, KeycloakTokenParsed, KeycloakUserInfo } from 'keycloak-js';
 import Keycloak from 'keycloak-js';
 import { BehaviorSubject, Subject } from 'rxjs';
 import {
-    buildSilentCheckSsoRedirectUri,
-    parseKeycloakAuthority,
-    resolveAuthUrl,
-} from './keycloak-auth.config';
-import { KEYCLOAK_AUTH_CONFIG } from './keycloak-config.token';
+  buildSilentCheckSsoRedirectUri,
+  parseKeycloakAuthority,
+  resolveAuthUrl,
+} from '../config/keycloak-auth.config';
+import { KEYCLOAK_AUTH_CONFIG } from '../config/keycloak-config.token';
 
 @Injectable({ providedIn: 'root' })
 export class KeycloakAuthService {
@@ -91,9 +87,7 @@ export class KeycloakAuthService {
     return this.isAuthenticatedSubject.value;
   }
 
-  async login(
-    extraOptions?: Partial<Keycloak.KeycloakLoginOptions>,
-  ): Promise<void> {
+  async login(extraOptions?: Partial<Keycloak.KeycloakLoginOptions>): Promise<void> {
     await this.initialize();
     const loginHint = this.consumeLoginHint();
     this.clearStoredTokens();
@@ -132,7 +126,7 @@ export class KeycloakAuthService {
     window.sessionStorage.removeItem(this.loginHintStorageKey);
     return value;
   }
-// 
+  //
   async logout(explicit = true): Promise<void> {
     const storedUser = this.getStoredUserInfo();
 
@@ -148,10 +142,7 @@ export class KeycloakAuthService {
     this.lastTokenRefreshAttemptAt = 0;
 
     const keycloak = this.requireKeycloak();
-    const postLogoutUrl = new URL(
-      this.config.postLogoutRedirectUri,
-      window.location.origin,
-    );
+    const postLogoutUrl = new URL(this.config.postLogoutRedirectUri, window.location.origin);
 
     const preferredUsername = storedUser?.userInfo?.['preferred_username'];
     if (preferredUsername) {
@@ -264,9 +255,7 @@ export class KeycloakAuthService {
       return null;
     }
 
-    const value = window.sessionStorage.getItem(
-      this.postLoginRedirectStorageKey,
-    );
+    const value = window.sessionStorage.getItem(this.postLoginRedirectStorageKey);
     window.sessionStorage.removeItem(this.postLoginRedirectStorageKey);
 
     return value && value.startsWith('/') ? value : null;
@@ -309,8 +298,7 @@ export class KeycloakAuthService {
     this.keycloak = keycloak;
     this.bindEventHandlers(keycloak);
 
-    const allowIframeSessionChecks =
-      this.config.enableIframeSessionChecks ?? false;
+    const allowIframeSessionChecks = this.config.enableIframeSessionChecks ?? false;
     const onLoadMode = allowIframeSessionChecks ? 'check-sso' : undefined;
     const storedTokens = this.readStoredTokens();
 
@@ -396,11 +384,7 @@ export class KeycloakAuthService {
       this.clearStoredTokens();
       this.clearStoredUserInfo();
 
-      if (
-        this.initialLoadCompleted &&
-        wasAuthenticated &&
-        !this.explicitLogoutRequested
-      ) {
+      if (this.initialLoadCompleted && wasAuthenticated && !this.explicitLogoutRequested) {
         this.sessionTerminatedSubject.next();
       }
 
@@ -432,12 +416,8 @@ export class KeycloakAuthService {
   private captureRefreshTokenExpiry(keycloak: Keycloak): void {
     const timeSkew = keycloak.timeSkew ?? 0;
 
-    if (
-      keycloak.refreshTokenParsed &&
-      typeof keycloak.refreshTokenParsed.exp === 'number'
-    ) {
-      this.refreshTokenExpiresAt =
-        (keycloak.refreshTokenParsed.exp - timeSkew) * 1000;
+    if (keycloak.refreshTokenParsed && typeof keycloak.refreshTokenParsed.exp === 'number') {
+      this.refreshTokenExpiresAt = (keycloak.refreshTokenParsed.exp - timeSkew) * 1000;
       return;
     }
 
@@ -475,8 +455,7 @@ export class KeycloakAuthService {
 
     const now = Date.now();
     const token = keycloak.token ?? null;
-    const tokenStillValid =
-      !!token && !keycloak.isTokenExpired(minValiditySeconds);
+    const tokenStillValid = !!token && !keycloak.isTokenExpired(minValiditySeconds);
     const withinThrottleWindow =
       !force &&
       this.lastTokenRefreshAttemptAt > 0 &&
@@ -572,9 +551,7 @@ export class KeycloakAuthService {
 
       const token = typeof parsed.token === 'string' ? parsed.token : undefined;
       const refreshToken =
-        typeof parsed.refreshToken === 'string'
-          ? parsed.refreshToken
-          : undefined;
+        typeof parsed.refreshToken === 'string' ? parsed.refreshToken : undefined;
 
       if (!token || !refreshToken) {
         return null;
@@ -583,14 +560,10 @@ export class KeycloakAuthService {
       return {
         token,
         refreshToken,
-        idToken:
-          typeof parsed.idToken === 'string' ? parsed.idToken : undefined,
-        timeSkew:
-          typeof parsed.timeSkew === 'number' ? parsed.timeSkew : undefined,
+        idToken: typeof parsed.idToken === 'string' ? parsed.idToken : undefined,
+        timeSkew: typeof parsed.timeSkew === 'number' ? parsed.timeSkew : undefined,
         refresh_expires_in:
-          typeof parsed.refresh_expires_in === 'number'
-            ? parsed.refresh_expires_in
-            : undefined,
+          typeof parsed.refresh_expires_in === 'number' ? parsed.refresh_expires_in : undefined,
       };
     } catch {
       return null;
@@ -631,25 +604,16 @@ export class KeycloakAuthService {
         .then((userInfo) => {
           if (userInfo) {
             userInfoData.userInfo = userInfo;
-            window.localStorage.setItem(
-              this.userInfoStorageKey,
-              JSON.stringify(userInfoData),
-            );
+            window.localStorage.setItem(this.userInfoStorageKey, JSON.stringify(userInfoData));
           }
         })
         .catch(() => {
           if (this.userProfile) {
-            window.localStorage.setItem(
-              this.userInfoStorageKey,
-              JSON.stringify(userInfoData),
-            );
+            window.localStorage.setItem(this.userInfoStorageKey, JSON.stringify(userInfoData));
           }
         });
     } else if (this.userProfile) {
-      window.localStorage.setItem(
-        this.userInfoStorageKey,
-        JSON.stringify(userInfoData),
-      );
+      window.localStorage.setItem(this.userInfoStorageKey, JSON.stringify(userInfoData));
     }
   }
 
@@ -698,10 +662,7 @@ export class KeycloakAuthService {
       return;
     }
 
-    window.localStorage.setItem(
-      this.idleActivityStorageKey,
-      Date.now().toString(),
-    );
+    window.localStorage.setItem(this.idleActivityStorageKey, Date.now().toString());
   }
 
   private resetIdleTimer(): void {
@@ -747,18 +708,18 @@ export class KeycloakAuthService {
 
     const warningDelaySeconds =
       remainingSeconds <= warningSeconds ? 0 : remainingSeconds - warningSeconds;
-    this.tokenExpiryWarningTimeoutId = window.setTimeout(() => {
-      const nextRemainingSeconds = this.getTokenRemainingSeconds();
-      if (!nextRemainingSeconds || nextRemainingSeconds <= 0) {
-        return;
-      }
+    this.tokenExpiryWarningTimeoutId = window.setTimeout(
+      () => {
+        const nextRemainingSeconds = this.getTokenRemainingSeconds();
+        if (!nextRemainingSeconds || nextRemainingSeconds <= 0) {
+          return;
+        }
 
-      const dialogCountdownSeconds = Math.min(
-        Math.max(1, nextRemainingSeconds),
-        warningSeconds,
-      );
-      this.openTokenExpiryWarningDialog(dialogCountdownSeconds);
-    }, Math.max(1000, warningDelaySeconds * 1000));
+        const dialogCountdownSeconds = Math.min(Math.max(1, nextRemainingSeconds), warningSeconds);
+        this.openTokenExpiryWarningDialog(dialogCountdownSeconds);
+      },
+      Math.max(1000, warningDelaySeconds * 1000),
+    );
   }
 
   private openTokenExpiryWarningDialog(countdownSeconds: number): void {
@@ -786,9 +747,7 @@ export class KeycloakAuthService {
       return;
     }
 
-    void this.logout(false).catch((e) =>
-      console.error('Auto logout on token expiry failed:', e),
-    );
+    void this.logout(false).catch((e) => console.error('Auto logout on token expiry failed:', e));
   }
 
   private extendSessionOnActivity(): void {
@@ -835,10 +794,7 @@ export class KeycloakAuthService {
       return null;
     }
 
-    return Math.max(
-      0,
-      Math.floor((this.refreshTokenExpiresAt - Date.now()) / 1000),
-    );
+    return Math.max(0, Math.floor((this.refreshTokenExpiresAt - Date.now()) / 1000));
   }
 
   private clearIdleTimers(): void {
@@ -852,12 +808,10 @@ export class KeycloakAuthService {
 
     document.cookie.split(';').forEach((cookie) => {
       const eqPos = cookie.indexOf('=');
-      const name =
-        eqPos > -1 ? cookie.substring(0, eqPos).trim() : cookie.trim();
+      const name = eqPos > -1 ? cookie.substring(0, eqPos).trim() : cookie.trim();
       if (name) {
         document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/;`;
       }
     });
   }
 }
-

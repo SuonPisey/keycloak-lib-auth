@@ -1,64 +1,114 @@
-# AuthCore
+# @suonpisey/auth-core
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.2.0.
+Reusable Angular building blocks for Keycloak authentication, permission checks,
+and IAM-driven grouped sidebar navigation.
 
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
-```bash
-ng generate component component-name
-```
-
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+## Install
 
 ```bash
-ng generate --help
+npm install @suonpisey/auth-core keycloak-js
 ```
 
-## Building
+## Configure authentication
 
-To build the library, run:
+Register the library once in the application configuration. This also installs
+the bearer-token HTTP interceptor.
+
+```ts
+import { ApplicationConfig } from '@angular/core';
+import { provideRouter } from '@angular/router';
+import { provideAuthCore } from '@suonpisey/auth-core';
+
+export const appConfig: ApplicationConfig = {
+  providers: [
+    provideRouter([]),
+    provideAuthCore({
+      authority: 'https://iam.example.com/realms/internal',
+      clientId: 'hb-it-internal',
+      redirectUri: '/',
+      postLogoutRedirectUri: '/login',
+      scope: 'openid profile email',
+    }),
+  ],
+};
+```
+
+Initialize authentication during application startup or in the root component:
+
+```ts
+constructor(private readonly auth: KeycloakAuthService) {
+  void this.auth.initialize();
+}
+```
+
+The consuming application must provide
+`/assets/silent-check-sso.html` when iframe session checks are enabled.
+
+## Permissions
+
+```ts
+const permissions = inject(PermissionService);
+
+permissions.setPermissions(['user:view', 'user:create']);
+permissions.can('user:view');
+permissions.canAny(['user:create', 'user:update']);
+permissions.canAll(['user:view', 'user:create']);
+```
+
+## Grouped sidebar menu
+
+Convert the IAM `/menus/effective` response once:
+
+```ts
+const sidebarMenu = inject(SidebarMenuService);
+sidebarMenu.setEffectiveMenu(response.data);
+```
+
+Import and render the standalone component:
+
+```ts
+import { Component } from '@angular/core';
+import { SidebarMenuComponent } from '@suonpisey/auth-core';
+
+@Component({
+  standalone: true,
+  imports: [SidebarMenuComponent],
+  template: ` <auth-sidebar-menu title="Hanuman Portal" [collapsed]="sidebarCollapsed" /> `,
+})
+export class AppSidebarComponent {
+  sidebarCollapsed = false;
+}
+```
+
+The component reads `SidebarMenuService` automatically. It also accepts menu
+items directly through `[items]`. Appearance can be customized with the
+`--auth-sidebar-*` CSS custom properties.
+
+## Source layout
+
+```text
+src/lib/
+├── auth/
+│   ├── config/
+│   ├── interceptors/
+│   ├── providers/
+│   └── services/
+├── navigation/
+│   ├── components/
+│   ├── models/
+│   └── services/
+├── permissions/
+└── ui/
+```
+
+Feature folders expose their own barrel file, while `src/public-api.ts` remains
+the only supported package entry point. Internal file paths are not public API.
+
+## Develop
 
 ```bash
-ng build auth-core
+npm run build
+npm test -- --watch=false
 ```
 
-This command will compile your project, and the build artifacts will be placed in the `dist/` directory.
-
-### Publishing the Library
-
-Once the project is built, you can publish your library by following these steps:
-
-1. Navigate to the `dist` directory:
-
-   ```bash
-   cd dist/auth-core
-   ```
-
-2. Run the `npm publish` command to publish your library to the npm registry:
-   ```bash
-   npm publish
-   ```
-
-## Running unit tests
-
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+Build output is written to `dist/auth-core`.

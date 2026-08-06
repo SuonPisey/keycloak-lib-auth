@@ -1,5 +1,5 @@
-export * from './lib/keycloak-auth.service';
-export * from './lib/keycloak-config.token';
-export * from './lib/keycloak-auth.config';
-export * from './lib/app-confirm-logout.component';
-export * from './lib/auth.interceptor';
+/** Authentication, authorization, and navigation building blocks for Angular. */
+export * from './lib/auth';
+export * from './lib/navigation';
+export * from './lib/permissions';
+export * from './lib/ui';

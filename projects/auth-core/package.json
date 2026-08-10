@@ -1,6 +1,6 @@
 {
   "name": "@suonpisey/auth-core",
-  "version": "0.0.11",
+  "version": "0.0.21",
   "description": "Reusable Keycloak authentication, permissions, and grouped navigation for Angular applications.",
   "keywords": [
     "angular",

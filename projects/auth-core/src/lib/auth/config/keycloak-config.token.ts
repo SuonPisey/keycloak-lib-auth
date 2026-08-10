@@ -6,6 +6,9 @@ export interface KeycloakAuthConfig {
   redirectUri: string;
   postLogoutRedirectUri: string;
   scope?: string;
+  /** Checks an existing Keycloak browser session without showing the login page. Defaults to true. */
+  enableSilentSso?: boolean;
+  /** Enables Keycloak's recurring login-status iframe polling. */
   enableIframeSessionChecks?: boolean;
   tokenExpiryWarningSeconds?: number;
   production?: boolean;

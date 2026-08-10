@@ -132,7 +132,6 @@ export class KeycloakAuthService {
 
     await this.initialize();
     this.explicitLogoutRequested = explicit;
-    this.markSkipAutoLoginOnce();
     this.clearIdleTimers();
     this.clearTokenExpiryWarning();
     this.clearStoredTokens();
@@ -155,7 +154,7 @@ export class KeycloakAuthService {
       console.error('Error updating token before logout:', e);
     }
 
-    keycloak.logout({
+    await keycloak.logout({
       redirectUri: postLogoutUrl.toString(),
     });
   }
@@ -298,8 +297,9 @@ export class KeycloakAuthService {
     this.keycloak = keycloak;
     this.bindEventHandlers(keycloak);
 
+    const allowSilentSso = this.config.enableSilentSso ?? true;
     const allowIframeSessionChecks = this.config.enableIframeSessionChecks ?? false;
-    const onLoadMode = allowIframeSessionChecks ? 'check-sso' : undefined;
+    const onLoadMode = allowSilentSso ? 'check-sso' : undefined;
     const storedTokens = this.readStoredTokens();
 
     if (storedTokens) {
@@ -317,7 +317,7 @@ export class KeycloakAuthService {
         pkceMethod: 'S256',
         scope: this.config.scope,
         redirectUri: resolveAuthUrl(this.config.redirectUri),
-        silentCheckSsoRedirectUri: allowIframeSessionChecks
+        silentCheckSsoRedirectUri: allowSilentSso
           ? buildSilentCheckSsoRedirectUri()
           : undefined,
         silentCheckSsoFallback: false,
@@ -578,6 +578,8 @@ export class KeycloakAuthService {
     window.localStorage.removeItem(this.tokenStorageKey);
     window.localStorage.removeItem(this.idleActivityStorageKey);
     window.localStorage.removeItem('cached_menu_items');
+    window.localStorage.removeItem('cached_effective_menu_items');
+    window.localStorage.removeItem('cached_permissions');
     window.localStorage.removeItem('user_permissions');
     window.localStorage.removeItem('user_permissions_hash');
     window.sessionStorage.removeItem(this.loginHintStorageKey);
@@ -615,14 +617,6 @@ export class KeycloakAuthService {
     } else if (this.userProfile) {
       window.localStorage.setItem(this.userInfoStorageKey, JSON.stringify(userInfoData));
     }
-  }
-
-  private markSkipAutoLoginOnce(): void {
-    if (!isPlatformBrowser(this.platformId)) {
-      return;
-    }
-
-    window.sessionStorage.setItem(this.skipAutoLoginStorageKey, '1');
   }
 
   private isAuthUtilityRoute(url: string): boolean {

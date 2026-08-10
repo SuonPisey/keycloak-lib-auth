@@ -1,4 +1,8 @@
-<aside class="auth-sidebar" [attr.aria-label]="ariaLabel">
+<aside
+  class="auth-sidebar"
+  [class.auth-sidebar--collapsed]="collapsed"
+  [attr.aria-label]="ariaLabel"
+>
   <div class="auth-sidebar__branding">
     <span class="auth-sidebar__brand">{{ brandTitle }}</span>
     <!-- <button
@@ -26,11 +30,12 @@
   </div>
 
   <div *ngIf="showDivider" class="auth-sidebar__divider" role="separator"></div>
-
-  <auth-sidebar-menu
-    [items]="items"
-    [title]="menuTitle"
-    [collapsed]="collapsed"
-    style="--auth-sidebar-background: transparent"
-  ></auth-sidebar-menu>
+  <div class="auth-sidebar__menu">
+    <auth-sidebar-menu
+      [items]="items"
+      [title]="menuTitle"
+      [collapsed]="collapsed"
+      style="--auth-sidebar-background: transparent"
+    ></auth-sidebar-menu>
+  </div>
 </aside>

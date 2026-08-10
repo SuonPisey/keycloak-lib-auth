@@ -1,0 +1,86 @@
+<header class="auth-header">
+  <div class="auth-header__leading">
+    <button
+      *ngIf="showMenuToggle"
+      type="button"
+      class="auth-header__icon-button material-icons"
+      [attr.aria-label]="menuLabel"
+      [attr.title]="menuLabel"
+      (click)="menuToggle.emit()"
+    >
+      menu
+    </button>
+
+    <button
+      type="button"
+      class="auth-header__logo-button"
+      [attr.aria-label]="homeLabel"
+      [attr.title]="homeLabel"
+      (click)="homeClick.emit()"
+    >
+      <img class="auth-header__logo" [src]="logoSrc" [alt]="logoAlt" />
+    </button>
+  </div>
+
+  <div class="auth-header__actions">
+    <button
+      *ngIf="showNotifications"
+      type="button"
+      class="auth-header__icon-button material-icons"
+      [attr.aria-label]="notificationLabel"
+      [attr.title]="notificationLabel"
+      (click)="notificationClick.emit()"
+    >
+      notifications
+      <span *ngIf="notificationCount > 0" class="auth-header__badge">{{
+        notificationCount > 99 ? '99+' : notificationCount
+      }}</span>
+    </button>
+
+    <button
+      *ngIf="showHelp"
+      type="button"
+      class="auth-header__icon-button material-icons"
+      [attr.aria-label]="helpLabel"
+      [attr.title]="helpLabel"
+      (click)="helpClick.emit()"
+    >
+      support_agent
+    </button>
+
+    <div *ngIf="showProfile" class="auth-header__account" (click)="$event.stopPropagation()">
+      <button
+        type="button"
+        class="auth-header__avatar-button"
+        [attr.aria-label]="profileLabel"
+        [attr.title]="profileLabel"
+        [attr.aria-expanded]="accountMenuOpen"
+        aria-haspopup="menu"
+        (click)="toggleAccountMenu($event)"
+      >
+        <img
+          *ngIf="userImageSrc || fallbackUserImageSrc; else profileIcon"
+          class="auth-header__avatar"
+          [src]="userImageSrc || fallbackUserImageSrc"
+          alt=""
+        />
+        <ng-template #profileIcon>
+          <span class="auth-header__avatar-icon material-icons" aria-hidden="true"
+            >account_circle</span
+          >
+        </ng-template>
+      </button>
+
+      <div *ngIf="accountMenuOpen" class="auth-header__account-menu" role="menu">
+        <a class="auth-header__menu-item" [routerLink]="profileRoute" (click)="closeAccountMenu()">
+          <span class="material-icons" aria-hidden="true">manage_accounts</span>
+          <span>{{ profileLabel }}</span>
+        </a>
+        <button type="button" class="auth-header__menu-item" (click)="emitSignOut()">
+          <span class="material-icons" aria-hidden="true">power_settings_new</span>
+          <span>{{ signOutLabel }}</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</header>

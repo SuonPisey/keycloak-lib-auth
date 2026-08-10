@@ -1,0 +1,175 @@
+:host {
+  display: block;
+  width: 100%;
+}
+
+.auth-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-sizing: border-box;
+  width: 100%;
+  min-height: var(--auth-header-height, 72px);
+  padding: 0 var(--auth-header-padding-inline, 24px);
+  border-bottom: 1px solid var(--auth-header-border-color, #e5e7eb);
+  color: var(--auth-header-color, #202124);
+  background: var(--auth-header-background, #fff);
+}
+
+.auth-header__leading,
+.auth-header__actions {
+  display: flex;
+  align-items: center;
+}
+
+.auth-header__leading {
+  gap: 14px;
+}
+
+.auth-header__actions {
+  gap: 2px;
+}
+
+.auth-header__icon-button,
+.auth-header__logo-button,
+.auth-header__avatar-button,
+.auth-header__menu-item {
+  border: 0;
+  font: inherit;
+  cursor: pointer;
+}
+
+.auth-header__icon-button,
+.auth-header__avatar-button {
+  display: inline-flex;
+  position: relative;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border-radius: 50%;
+  color: inherit;
+  background: transparent;
+}
+
+.auth-header__icon-button {
+  font-family: 'Material Icons';
+  font-feature-settings: 'liga';
+  -webkit-font-feature-settings: 'liga';
+  font-size: 22px;
+}
+
+.auth-header__icon-button:hover,
+.auth-header__icon-button:focus-visible,
+.auth-header__avatar-button:hover,
+.auth-header__avatar-button:focus-visible {
+  background: var(--auth-header-hover-background, #f3f4f6);
+  outline: none;
+}
+
+.auth-header__logo-button {
+  display: inline-flex;
+  align-items: center;
+  padding: 0;
+  background: transparent;
+}
+
+.auth-header__logo {
+  display: block;
+  width: var(--auth-header-logo-width, 150px);
+  max-height: 44px;
+  object-fit: contain;
+}
+
+.auth-header__badge {
+  display: inline-flex;
+  position: absolute;
+  top: 1px;
+  right: 0;
+  align-items: center;
+  justify-content: center;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 3px;
+  border-radius: 999px;
+  color: #fff;
+  background: var(--auth-header-badge-background, #dc2626);
+  font-family: Arial, sans-serif;
+  font-size: 10px;
+  line-height: 1;
+}
+
+.auth-header__account {
+  position: relative;
+}
+
+.auth-header__avatar {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.auth-header__avatar-icon {
+  color: #666;
+  font-family: 'Material Icons';
+  font-feature-settings: 'liga';
+  -webkit-font-feature-settings: 'liga';
+  font-size: 28px;
+}
+
+.auth-header__account-menu {
+  display: flex;
+  position: absolute;
+  z-index: 1000;
+  top: calc(100% + 8px);
+  right: 0;
+  flex-direction: column;
+  width: 190px;
+  padding: 6px;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: 0 12px 28px rgb(0 0 0 / 14%);
+}
+
+.auth-header__menu-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 42px;
+  padding: 0 12px;
+  border-radius: 6px;
+  color: #252525;
+  background: transparent;
+  text-align: left;
+  text-decoration: none;
+}
+
+.auth-header__menu-item:hover,
+.auth-header__menu-item:focus-visible {
+  background: #f3f4f6;
+  outline: none;
+}
+
+.auth-header__menu-item .material-icons {
+  font-family: 'Material Icons';
+  font-feature-settings: 'liga';
+  -webkit-font-feature-settings: 'liga';
+  font-size: 20px;
+}
+
+@media (max-width: 600px) {
+  .auth-header {
+    padding-inline: 12px;
+  }
+
+  .auth-header__leading {
+    gap: 8px;
+  }
+
+  .auth-header__logo {
+    width: var(--auth-header-mobile-logo-width, 125px);
+  }
+}

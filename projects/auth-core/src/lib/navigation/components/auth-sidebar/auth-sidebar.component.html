@@ -1,0 +1,36 @@
+<aside class="auth-sidebar" [attr.aria-label]="ariaLabel">
+  <div class="auth-sidebar__branding">
+    <span class="auth-sidebar__brand">{{ brandTitle }}</span>
+    <!-- <button
+      *ngIf="!compactStyle"
+      type="button"
+      class="auth-sidebar__collapse"
+      [class.auth-sidebar__collapse--active]="collapsed"
+      [attr.aria-label]="collapsed ? 'Expand sidebar' : 'Collapse sidebar'"
+      [attr.aria-expanded]="!collapsed"
+      (click)="collapseToggle.emit()"
+    ><span></span></button> -->
+  </div>
+
+  <div *ngIf="userName || userImageSrc || fallbackUserImageSrc" class="auth-sidebar__user">
+    <img
+      *ngIf="userImageSrc || fallbackUserImageSrc"
+      class="auth-sidebar__avatar"
+      [src]="userImageSrc || fallbackUserImageSrc"
+      alt=""
+    />
+    <span *ngIf="userName" class="auth-sidebar__user-name">
+      <span class="material-icons auth-sidebar__lock" aria-hidden="true">lock</span>
+      {{ userName }}
+    </span>
+  </div>
+
+  <div *ngIf="showDivider" class="auth-sidebar__divider" role="separator"></div>
+
+  <auth-sidebar-menu
+    [items]="items"
+    [title]="menuTitle"
+    [collapsed]="collapsed"
+    style="--auth-sidebar-background: transparent"
+  ></auth-sidebar-menu>
+</aside>

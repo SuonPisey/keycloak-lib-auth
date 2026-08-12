@@ -40,12 +40,27 @@
       </button>
 
       <a
-        *ngIf="item.type === 'link' || item.type === 'icon'"
+        *ngIf="(item.type === 'link' || item.type === 'icon') && !isExternal(item)"
         class="auth-sidebar__control"
         [class.auth-sidebar__control--disabled]="item.disabled"
         [routerLink]="item.disabled ? null : ['/', item.state]"
         routerLinkActive="auth-sidebar__control--active"
         [routerLinkActiveOptions]="{ exact: false }"
+        [attr.aria-disabled]="item.disabled || null"
+        [attr.title]="collapsed ? item.tooltip || item.name : item.tooltip"
+      >
+        <span class="auth-sidebar__icon material-icons" *ngIf="item.icon" aria-hidden="true">{{
+          item.icon
+        }}</span>
+        <span class="auth-sidebar__label" *ngIf="!collapsed || level > 1">{{ item.name }}</span>
+        <span class="auth-sidebar__badge" *ngFor="let badge of item.badges">{{ badge.value }}</span>
+      </a>
+
+      <a
+        *ngIf="(item.type === 'link' || item.type === 'icon') && isExternal(item)"
+        class="auth-sidebar__control"
+        [class.auth-sidebar__control--disabled]="item.disabled"
+        [attr.href]="item.disabled ? null : externalUrl(item)"
         [attr.aria-disabled]="item.disabled || null"
         [attr.title]="collapsed ? item.tooltip || item.name : item.tooltip"
       >

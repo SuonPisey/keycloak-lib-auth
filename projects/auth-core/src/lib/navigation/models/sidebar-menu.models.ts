@@ -4,6 +4,7 @@ export type SidebarMenuVariant = 'icon-menu' | 'separator-menu' | 'plain-menu';
 /** IAM menu node returned by the effective-menu endpoint. */
 export interface EffectiveMenuItem {
   id?: unknown;
+  clientId?: string | null;
   title: string;
   path?: string | null;
   icon?: string;
@@ -19,6 +20,7 @@ export interface SidebarMenuBadge {
 /** Presentation model consumed by SidebarMenuComponent. */
 export interface SidebarMenuItem {
   id?: unknown;
+  clientId?: string | null;
   type: SidebarMenuType;
   name: string;
   state: string;

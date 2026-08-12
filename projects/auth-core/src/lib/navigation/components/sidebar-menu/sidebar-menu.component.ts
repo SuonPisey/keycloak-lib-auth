@@ -4,6 +4,7 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { SidebarMenuItem } from '../../models/sidebar-menu.models';
 import { SidebarMenuService } from '../../services/sidebar-menu.service';
+import { ClientApplicationService } from '../../../environment/client-application.service';
 
 @Component({
   selector: 'auth-sidebar-menu',
@@ -23,7 +24,10 @@ export class SidebarMenuComponent implements OnInit, OnChanges, OnDestroy {
   readonly expandedItems = new Set<SidebarMenuItem>();
   private menuSubscription?: Subscription;
 
-  constructor(private readonly sidebarMenu: SidebarMenuService) {}
+  constructor(
+    private readonly sidebarMenu: SidebarMenuService,
+    private readonly clientApplications: ClientApplicationService,
+  ) {}
 
   ngOnInit(): void {
     this.bindItems();
@@ -59,6 +63,16 @@ export class SidebarMenuComponent implements OnInit, OnChanges, OnDestroy {
 
   trackByMenuItem(index: number, item: SidebarMenuItem): unknown {
     return item.id ?? `${item.name}:${item.state}:${index}`;
+  }
+
+  isExternal(item: SidebarMenuItem): boolean {
+    return this.clientApplications.isExternalClient(item.clientId);
+  }
+
+  externalUrl(item: SidebarMenuItem): string | null {
+    return item.clientId
+      ? this.clientApplications.resolveUrl(item.clientId, item.state)
+      : null;
   }
 
   private bindItems(): void {

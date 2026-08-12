@@ -42,6 +42,7 @@ export class SidebarMenuService {
     const children = item.children ?? [];
     const menuItem: SidebarMenuItem = {
       id: item.id,
+      clientId: item.clientId,
       name: item.title,
       type: children.length > 0 ? 'dropDown' : 'link',
       state: this.normalizePath(item.path),

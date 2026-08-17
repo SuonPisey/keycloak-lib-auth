@@ -110,7 +110,7 @@ export class IamNavigationService {
     if (this.menuRequest) return this.menuRequest;
 
     this.menuRequest = lastValueFrom(
-      this.http.get<IamResponse<EffectiveMenuItem[]>>(this.url(this.config.menuEndpoint ?? 'menus/effective')),
+      this.http.get<IamResponse<EffectiveMenuItem[]>>(this.url(this.config.menuEndpoint ?? 'menus/effective?prefix=hb:hb-ui-internal:')),
     )
       .then((response) => {
         const menu = response.data ?? [];

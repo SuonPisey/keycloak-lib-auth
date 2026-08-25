@@ -1,6 +1,6 @@
 {
   "name": "@suonpisey/auth-core",
-  "version": "0.0.26",
+  "version": "0.0.36",
   "description": "Reusable Keycloak authentication, permissions, and grouped navigation for Angular applications.",
   "keywords": [
     "angular",
@@ -17,9 +17,9 @@
     "url": "git+https://github.com/SuonPisey/keycloak-lib-auth.git"
   },
   "peerDependencies": {
-    "@angular/common": "^21.2.0",
-    "@angular/core": "^21.2.0",
-    "@angular/router": "^21.2.0",
+    "@angular/common": ">=18.0.0 <22.0.0",
+    "@angular/core": ">=18.0.0 <22.0.0",
+    "@angular/router": ">=18.0.0 <22.0.0",
     "keycloak-js": "^26.2.4"
   },
   "dependencies": {

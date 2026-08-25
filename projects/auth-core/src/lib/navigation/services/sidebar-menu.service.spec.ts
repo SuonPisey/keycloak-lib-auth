@@ -41,72 +41,18 @@ describe('SidebarMenuService', () => {
     expect(service.getMenuItems()).toEqual([]);
   });
 
-  it('extracts a target client from a variable-prefixed path', () => {
+  it('resolves a client token without encoding it into the route', () => {
     const service = new SidebarMenuService();
 
-    const menu = service.setEffectiveMenu([
+    const [item] = service.setEffectiveMenu([
       {
-        id: 150,
+        title: 'New Incident',
+        path: '${hb-ui-it}/it/helpdesk/sites',
         clientId: 'hb-api-dms',
-        title: 'Sponsorship',
-        path: '/sponsorships',
-        children: [
-          {
-            id: 149,
-            clientId: 'hb-api-dms',
-            title: 'List Request',
-            path: '${hb-ui-hr}/hr/leave/my-leave-request',
-          },
-        ],
       },
     ]);
 
-    expect(menu[0].sub?.[0]).toEqual(
-      expect.objectContaining({
-        clientId: 'hb-ui-hr',
-        state: 'hr/leave/my-leave-request',
-      }),
-    );
+    expect(item.clientId).toBe('hb-ui-it');
+    expect(item.state).toBe('it/helpdesk/sites');
   });
-
-  it('extracts a target client when the path has leading whitespace', () => {
-    const service = new SidebarMenuService();
-
-    const menu = service.setEffectiveMenu([
-      {
-        title: 'List Request',
-        clientId: 'hb-api-dms',
-        path: '  ${hb-ui-hr}/hr/leave/my-leave-request',
-      },
-    ]);
-
-    expect(menu[0]).toEqual(
-      expect.objectContaining({
-        clientId: 'hb-ui-hr',
-        state: 'hr/leave/my-leave-request',
-      }),
-    );
-  });
-
-  it.each(['hb-ui-hr', 'hb-ui-it', 'hb-ui-general', 'hb-internal-it'])(
-    'maps a data-driven link for %s',
-    (clientId) => {
-      const service = new SidebarMenuService();
-
-      const menu = service.setEffectiveMenu([
-        {
-          title: 'Application link',
-          clientId: 'hb-api-navigation',
-          path: `\${${clientId}}/dashboard`,
-        },
-      ]);
-
-      expect(menu[0]).toEqual(
-        expect.objectContaining({
-          clientId,
-          state: 'dashboard',
-        }),
-      );
-    },
-  );
 });

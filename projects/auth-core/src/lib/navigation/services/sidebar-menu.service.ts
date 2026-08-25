@@ -66,10 +66,7 @@ export class SidebarMenuService {
     return (path ?? '').replace(/^\/+/, '');
   }
 
-  /**
-   * A path can name another registered UI using `${clientId}/path`.
-   * The path's client takes precedence over the API item's owning client.
-   */
+  /** Resolve `${clientId}/path` menu destinations before Angular builds the URL. */
   private resolveDestination(
     path: string | null | undefined,
     fallbackClientId: string | null | undefined,

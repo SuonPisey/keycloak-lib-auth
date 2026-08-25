@@ -75,6 +75,10 @@ export class SidebarMenuComponent implements OnInit, OnChanges, OnDestroy {
       : null;
   }
 
+  localRoute(item: SidebarMenuItem): string {
+    return `/${(item.state ?? '').replace(/^\/+/, '')}`;
+  }
+
   private bindItems(): void {
     this.menuSubscription?.unsubscribe();
 

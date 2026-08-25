@@ -43,7 +43,7 @@
         *ngIf="(item.type === 'link' || item.type === 'icon') && !isExternal(item)"
         class="auth-sidebar__control"
         [class.auth-sidebar__control--disabled]="item.disabled"
-        [routerLink]="item.disabled ? null : ['/', item.state]"
+        [routerLink]="item.disabled ? null : localRoute(item)"
         routerLinkActive="auth-sidebar__control--active"
         [routerLinkActiveOptions]="{ exact: false }"
         [attr.aria-disabled]="item.disabled || null"

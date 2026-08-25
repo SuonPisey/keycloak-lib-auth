@@ -74,9 +74,6 @@ export class IamNavigationService {
   }
 
   getPermissions(forceRefresh = false): Promise<boolean> {
-    if (!forceRefresh && this.permissions.hasPermissions()) return Promise.resolve(true);
-    if (this.permissionsRequest) return this.permissionsRequest;
-
     this.permissionsRequest = this.fetchPermissions().finally(() => {
       this.permissionsRequest = null;
     });
@@ -110,7 +107,7 @@ export class IamNavigationService {
     if (this.menuRequest) return this.menuRequest;
 
     this.menuRequest = lastValueFrom(
-      this.http.get<IamResponse<EffectiveMenuItem[]>>(this.url(this.config.menuEndpoint ?? 'menus/effective?prefix=hb:hb-ui-internal:')),
+      this.http.get<IamResponse<EffectiveMenuItem[]>>(this.url(this.config.menuEndpoint ?? 'menus/effective')),
     )
       .then((response) => {
         const menu = response.data ?? [];
@@ -159,6 +156,7 @@ export class IamNavigationService {
   private getCachedMenu(): EffectiveMenuItem[] | null {
     const raw = this.storage?.getItem(this.storageKey);
     if (!raw) return null;
+    console.log('Cached menu found:', raw);
     try {
       return JSON.parse(raw) as EffectiveMenuItem[];
     } catch {

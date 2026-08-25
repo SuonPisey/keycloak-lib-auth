@@ -40,4 +40,19 @@ describe('SidebarMenuService', () => {
     expect(service.setEffectiveMenu(undefined)).toEqual([]);
     expect(service.getMenuItems()).toEqual([]);
   });
+
+  it('resolves a client token without encoding it into the route', () => {
+    const service = new SidebarMenuService();
+
+    const [item] = service.setEffectiveMenu([
+      {
+        title: 'New Incident',
+        path: '${hb-ui-it}/it/helpdesk/sites',
+        clientId: 'hb-api-dms',
+      },
+    ]);
+
+    expect(item.clientId).toBe('hb-ui-it');
+    expect(item.state).toBe('it/helpdesk/sites');
+  });
 });

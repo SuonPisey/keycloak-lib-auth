@@ -40,12 +40,13 @@ export class SidebarMenuService {
 
   private toSidebarItem(item: EffectiveMenuItem, includeTopLevelDetails: boolean): SidebarMenuItem {
     const children = item.children ?? [];
+    const destination = this.resolveDestination(item.path, item.clientId);
     const menuItem: SidebarMenuItem = {
       id: item.id,
-      clientId: item.clientId,
+      clientId: destination.clientId,
       name: item.title,
       type: children.length > 0 ? 'dropDown' : 'link',
-      state: this.normalizePath(item.path),
+      state: destination.path,
       icon: item.icon,
       sub:
         children.length > 0 ? children.map((child) => this.toSidebarItem(child, false)) : undefined,
@@ -63,5 +64,23 @@ export class SidebarMenuService {
 
   private normalizePath(path: string | null | undefined): string {
     return (path ?? '').replace(/^\/+/, '');
+  }
+
+  /** Resolve `${clientId}/path` menu destinations before Angular builds the URL. */
+  private resolveDestination(
+    path: string | null | undefined,
+    fallbackClientId: string | null | undefined,
+  ): { clientId: string | null | undefined; path: string } {
+    const value = (path ?? '').trimStart();
+    const clientPrefix = value.match(/^\$\{([^{}]+)\}(?:\/+|$)/);
+
+    if (!clientPrefix) {
+      return { clientId: fallbackClientId, path: this.normalizePath(value) };
+    }
+
+    return {
+      clientId: clientPrefix[1],
+      path: this.normalizePath(value.slice(clientPrefix[0].length)),
+    };
   }
 }
